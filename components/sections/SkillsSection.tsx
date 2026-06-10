@@ -25,7 +25,6 @@ function useInView(threshold = 0.15) {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // 入ったときON、出たときOFF → スクロールするたびに再発動
         setInView(entry.isIntersecting)
       },
       { threshold }
@@ -42,7 +41,6 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
   const { ref: headerRef, inView: headerInView } = useInView()
   const { ref: contentRef, inView: contentInView } = useInView(0.05)
 
-  // パララックス背景用
   const sectionRef = useRef<HTMLElement>(null)
   const [bgY, setBgY] = useState(0)
   useEffect(() => {
@@ -55,16 +53,22 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  return (
-    <section id="skills" ref={sectionRef}
-      style={{ background: 'white', position: 'relative', overflow: 'hidden' }}>
+  // 固定スタイルオブジェクト
+  const sectionStyle = { background: 'white', position: 'relative' as const, overflow: 'hidden' as const }
+  const backgroundStyle = {
+    position: 'absolute' as const, 
+    inset: 0, 
+    pointerEvents: 'none' as const, 
+    zIndex: 0,
+    transform: `translateY(${bgY}px)`,
+    transition: 'transform 0.05s linear',
+  }
+  const headerBgStyle = { background: 'rgba(0,0,0,0.06)', position: 'relative' as const, zIndex: 1 }
+  const contentContainerStyle = { position: 'relative' as const, zIndex: 1 }
 
-      {/* パララックス背景装飾 */}
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0,
-        transform: `translateY(${bgY}px)`,
-        transition: 'transform 0.05s linear',
-      }}>
+  return (
+    <section id="skills" ref={sectionRef} style={sectionStyle}>
+      <div style={backgroundStyle}>
         <div style={{
           position: 'absolute', top: '-10%', right: '-5%',
           width: '400px', height: '400px', borderRadius: '50%',
@@ -79,20 +83,18 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
         }} />
       </div>
 
-      {/* グレー帯（固定・アニメなし） */}
-      <div style={{ background: 'rgba(0,0,0,0.06)', position: 'relative', zIndex: 1 }}>
+      <div style={headerBgStyle}>
         <div className="max-w-3xl mx-auto px-6 py-3">
-          <p className="text-xs font-bold uppercase tracking-widest mb-0.5"
-            style={{ color: '#7c3aed' }}>Skills</p>
-<h2 className="text-4xl font-black" style={{ color: '#1e1b4b' }}>
+          <p className="text-xs font-bold uppercase tracking-widest mb-0.5" style={{ color: '#7c3aed' }}>
+            Skills
+          </p>
+          <h2 className="text-4xl font-black" style={{ color: '#1e1b4b' }}>
             学習履歴・技術スタック
           </h2>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 py-14" style={{ position: 'relative', zIndex: 1 }}>
-
-        {/* 見出しフェードイン */}
+      <div className="max-w-3xl mx-auto px-6 py-14" style={contentContainerStyle}>
         <div ref={headerRef} style={{
           marginBottom: '2rem',
           opacity: headerInView ? 1 : 0,
@@ -100,8 +102,7 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
           transition: 'opacity 0.7s ease, transform 0.7s ease',
         }}>
           <div className="flex items-center gap-3">
-            <div className="w-1 h-8 rounded-full"
-              style={{ background: 'linear-gradient(#7c3aed, #06b6d4)' }} />
+            <div className="w-1 h-8 rounded-full" style={{ background: 'linear-gradient(#7c3aed, #06b6d4)' }} />
             <p className="text-lg font-black" style={{ color: '#1e1b4b' }}>
               習得中の技術スタック一覧
             </p>
@@ -124,10 +125,8 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
                 transition: `opacity 0.6s ease ${ci * 0.1}s, transform 0.6s ease ${ci * 0.1}s`,
               }}>
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="w-2 h-2 rounded-full shrink-0"
-                    style={{ background: color.dot }} />
-                  <h3 className="text-sm font-black uppercase tracking-wide"
-                    style={{ color: '#374151' }}>
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: color.dot }} />
+                  <h3 className="text-sm font-black uppercase tracking-wide" style={{ color: '#374151' }}>
                     {category}
                   </h3>
                   <div className="flex-1 h-px" style={{ background: '#f3f4f6' }} />
@@ -138,8 +137,7 @@ export default function SkillsSection({ skills }: { skills: Skill[] }) {
                 <div className="grid md:grid-cols-2 gap-2">
                   {skills.filter(s => s.category === category).map((skill, si) => (
                     <div key={skill.id}
-                      className="flex items-center justify-between rounded-xl px-4 py-3
-                        hover:shadow-sm transition-shadow"
+                      className="flex items-center justify-between rounded-xl px-4 py-3 hover:shadow-sm transition-shadow"
                       style={{
                         background: '#fafafa',
                         border: `1.5px solid ${color.bg}`,
