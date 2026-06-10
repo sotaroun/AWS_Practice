@@ -1,4 +1,4 @@
-cat > lib/supabase.ts << 'EOF'
+
 import { createClient } from '@supabase/supabase-js'
 
 // NEXT_PUBLIC_プレフィックス付きの環境変数を使用（クライアントサイドで必要）
@@ -19,4 +19,4 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-EOF
+
