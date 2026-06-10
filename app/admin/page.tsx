@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import AdminProfile from '@/components/admin/AdminProfile'
 import AdminSkills from '@/components/admin/AdminSkills'
 import AdminWorks from '@/components/admin/AdminWorks'
-import { LogOut, User, Code2, Briefcase } from 'lucide-react'
+import AdminAnalytics from '../../components/admin/AdminAnalytics'
+import { LogOut, User, Code2, Briefcase, BarChart3 } from 'lucide-react'
 
-type Tab = 'profile' | 'skills' | 'works'
+type Tab = 'profile' | 'skills' | 'works' | 'analytics'
 
 export default function AdminPage() {
   const router = useRouter()
@@ -43,6 +44,7 @@ export default function AdminPage() {
     { key: 'profile', label: '自己紹介', icon: <User size={15} /> },
     { key: 'skills',  label: 'スキル',   icon: <Code2 size={15} /> },
     { key: 'works',   label: '制作物',   icon: <Briefcase size={15} /> },
+    { key: 'analytics', label: '分析', icon: <BarChart3 size={15} /> },
   ]
 
   return (
@@ -93,7 +95,9 @@ export default function AdminPage() {
         {tab === 'profile' && <AdminProfile />}
         {tab === 'skills'  && <AdminSkills />}
         {tab === 'works'   && <AdminWorks />}
+        {tab === 'analytics' && <AdminAnalytics />}
       </div>
     </div>
   )
 }
+

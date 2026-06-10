@@ -1,14 +1,14 @@
+
 import { createClient } from '@supabase/supabase-js'
 
-// NEXT_PUBLIC_プレフィックス付きの環境変数を使用
+// NEXT_PUBLIC_プレフィックス付きの環境変数を使用（クライアントサイドで必要）
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
 console.log('Supabase Config:', {
   hasUrl: !!supabaseUrl,
   hasKey: !!supabaseAnonKey,
-  url: supabaseUrl,
-  keyLength: supabaseAnonKey?.length || 0
+  url: supabaseUrl
 })
 
 if (!supabaseUrl || !supabaseAnonKey) {
@@ -19,3 +19,4 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
